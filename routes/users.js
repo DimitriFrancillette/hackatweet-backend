@@ -5,16 +5,10 @@ const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
-module.exports = router;
-
-
+//ADD A USER
 router.post('/signup', (req, res) => {
-  if (!checkBody(req.body, ['username', 'password'])) {
+  if (!checkBody(req.body, ['firstname', 'username', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
@@ -41,6 +35,8 @@ router.post('/signup', (req, res) => {
   });
 });
 
+
+//SIGN IN AS A USER
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['username', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
@@ -49,9 +45,11 @@ router.post('/signin', (req, res) => {
 
   User.findOne({ username: req.body.username }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
-      res.json({ result: true, firstname: newDoc.firstname, username: newDoc.username, token: newDoc.token });
+      res.json({ result: true, firstname: data.firstname, username: data.username, token: data.token });
     } else {
       res.json({ result: false, error: 'User not found or wrong password' });
     }
   });
 });
+
+module.exports = router;
