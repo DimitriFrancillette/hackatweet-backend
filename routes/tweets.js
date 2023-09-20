@@ -1,15 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const Tweet = require('../models/tweet');
 const { checkBody } = require('../modules/checkBody');
+const moment = require('moment');
+
 
 // GET ALL TWEETS
 router.get('/', (req, res) => {
-  Tweet.find().then(data => {
-    console.log(data)
-    // res.json({ result: true, error: 'Missing or empty fields' });
+  Tweet.find().populate('user').then(data => {
     res.json(data);
   })
+
 });
 
 // ADD A TWEET IN DB
@@ -19,9 +20,13 @@ router.post('/', (req, res) => {
     return;
   }
 
+  const date = moment().format();
+
   const newTweet = new Tweet({
     description: req.body.description,
     likes: 0,
+    postedTime: date,
+    user: req.body.user,
   });
 
   newTweet.save().then(newDoc => {
