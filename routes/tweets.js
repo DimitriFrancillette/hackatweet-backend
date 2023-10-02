@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
 
   const newTweet = new Tweet({
     description: req.body.description,
-    likes: 0,
+    likes: [],
     postedTime: date,
     user: req.body.user,
   });
@@ -43,15 +43,61 @@ router.delete('/:id', (req, res) => {
     if (data.deletedCount === 0) {
       res.json({ result: false, error: "Tweet not found" });
     } else {
-      res.json({ result: true, data});
+      res.json({ result: true, data });
     }
   }).catch(err => {
     res.json({ error: "This is not a valid id", err });
   });
 });
 
+// ADD a like
+router.patch('/like/:id', (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+
+  let previousArray = [];
+
+  Tweet.findOne({ _id: id }).then(data => {
+    previousArray = data.likes
+
+    let newArray = [...previousArray, userId]
+
+    Tweet.updateOne({ _id: id }, { likes: newArray }).then(data => {
+      if (data.acknowledged === false) {
+        res.json({ result: false, error: "modification failed" });
+      } else {
+        res.json({ result: true, newArray });
+      }
+    })
+  }).catch(err => {
+    res.json({ error: "Tweet id not valid", err });
+  });
+});
 
 
+// REMOVE a like
+router.patch('/unlike/:id', (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+
+  let previousArray = [];
+
+  Tweet.findOne({ _id: id }).then(data => {
+    previousArray = data.likes;
+
+    let newArray = previousArray.filter(e => e !== userId);
+
+    Tweet.updateOne({ _id: id }, { likes: newArray }).then(data => {
+      if (data.acknowledged === false) {
+        res.json({ result: false, error: "modification failed" });
+      } else {
+        res.json({ result: true, newArray });
+      }
+    })
+  }).catch(err => {
+    res.json({ error: "Tweet id not valid", err });
+  });
+});
 
 
 module.exports = router;
