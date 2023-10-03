@@ -10,7 +10,6 @@ router.get('/', (req, res) => {
   Tweet.find().populate('user').then(data => {
     res.json(data);
   })
-
 });
 
 // ADD A TWEET IN DB
@@ -30,7 +29,6 @@ router.post('/', (req, res) => {
   });
 
   newTweet.save().then(newDoc => {
-    console.log(newDoc)
     res.json({ result: true });
   })
 
