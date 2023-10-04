@@ -12,11 +12,9 @@ router.get('/', (req, res) => {
 
 // ADD A HASHTAG TWEET
 router.post('/', (req, res) => {
-
     const { name, tweetId } = req.body;
 
     Hashtag.findOne({ name }).then(data => {
-
         if (data === null) {
             const newHashtag = new Hashtag({
                 name: name,
@@ -36,7 +34,7 @@ router.post('/', (req, res) => {
             res.json({ result: false, message: "tweet already has this hashtag" });
             return
         }
-        
+
         newTweetArray.push(tweetId);
 
         Hashtag.updateOne({ _id: data._id }, { tweet: newTweetArray }).then(newData => {
@@ -49,12 +47,47 @@ router.post('/', (req, res) => {
     }).catch(err => {
         res.json({ error: "hashtag name is not valid", err });
     });
-
-
-
-
-
 });
 
+// REMOVE A HASHTAG TWEET
+router.delete('/', (req, res) => {
+    const { name, tweetId } = req.body;
+
+    Hashtag.findOne({ name }).then(data => {
+        if (data !== null) {
+            const isInArray = data.tweet.includes(tweetId);
+
+            if (isInArray && data.tweet.length > 1) {
+                Hashtag.updateOne({ _id: data._id }, { $pull: { tweet: tweetId } }).then(newData => {
+                    if (newData.modifiedCount === 0) {
+                        res.json({ result: false, error: "modification failed" });
+                    } else {
+                        res.json({ result: true, newData });
+                    }
+                });
+                return
+            }
+
+            if (isInArray && data.tweet.length < 2) {
+                Hashtag.deleteOne({ _id: data._id }).then(data => {
+                    if (data.deletedCount === 0) {
+                        res.json({ result: false, error: "no hashtag found to delete" });
+                    } else {
+                        res.json({ result: true, data });
+                    }
+                })
+                return
+            }
+
+            res.json({ result: false, error: "this hastag is not in the tweet" });
+            return
+        }
+        res.json({ result: false, error: "no hashtag found" });
+
+    }).catch(err => {
+        res.json({ error: "hashtag name is not valid", err });
+    });
+
+});
 
 module.exports = router;
