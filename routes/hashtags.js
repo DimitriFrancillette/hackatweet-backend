@@ -4,7 +4,7 @@ const Hashtag = require('../models/hashtag');
 
 // GET ALL HASHTAGS
 router.get('/', (req, res) => {
-    Hashtag.find().then(data => {
+    Hashtag.find().populate('tweet').then(data => {
         res.json(data);
     })
 });
