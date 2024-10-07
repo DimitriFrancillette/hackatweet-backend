@@ -14,12 +14,7 @@ const hashtagsRouter = require('./routes/hashtags');
 
 const app = express();
 
-const corsOptions = {
-  origin: 'https://hackhatweet-frontend-pearl.vercel.app',
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,8 +26,5 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tweets', tweetsRouter);
 app.use('/hashtags', hashtagsRouter);
-
-// const port = process.env.PORT || 3000;
-// console.log(`Server is running on port ${port}`);
 
 module.exports = app;
