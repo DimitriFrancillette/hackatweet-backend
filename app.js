@@ -1,10 +1,10 @@
 require('dotenv').config();
 require('./models/connection');
 var express = require('express');
+var cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -14,7 +14,21 @@ const hashtagsRouter = require('./routes/hashtags');
 
 const app = express();
 
-app.use(cors('*'));
+var whitelist = [
+  'http://localhost:4000',
+  'https://hackhatweet-frontend-pearl.vercel.app',
+];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.use(logger('dev'));
 app.use(express.json());
