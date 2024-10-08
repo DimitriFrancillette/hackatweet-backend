@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../api');
 var debug = require('debug')('backend-new-hacka:server');
 var http = require('http');
 
