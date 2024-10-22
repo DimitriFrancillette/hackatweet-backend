@@ -6,7 +6,7 @@
 
 Bienvenue sur le projet Hackatweet.
 
-Le backend de ce projet a été créé servir les données nécessaires au frontend (users, tweets, hashtags).
+Le backend de ce projet a été créé pour servir les données nécessaires au frontend (users, tweets, hashtags).
 
 Hackatweet est une application qui permet d'échanger des messages entre utilisateurs (tout comme X) et d'afficher les messages en fonction des 'hashtags'.
 
